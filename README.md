@@ -69,7 +69,7 @@ Before running this project, make sure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Zienab-Khaled/full_stack_project.git
 cd laravel-vue-test
 ```
 
@@ -101,8 +101,8 @@ DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=laravel_vue_test
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+DB_USERNAME=
+DB_PASSWORD=
 ```
 
 ### 6. Run Database Migrations
@@ -246,31 +246,4 @@ php artisan test
 npm run build
 ```
 
-### Code Quality
 
-The project follows Laravel and Vue.js best practices:
-
--   PSR-12 coding standards
--   Vue 3 Composition API
--   Proper error handling
--   Security best practices
-
-## 📝 License
-
-This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📞 Support
-
-If you have any questions or need support, please open an issue in the repository.
-
----
-
-**Built with ❤️ using Laravel and Vue.js**
