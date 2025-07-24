@@ -90,6 +90,7 @@ npm install
 ```bash
 cp .env.example .env
 php artisan key:generate
+php artisan storage:link
 ```
 
 ### 5. Database Configuration
