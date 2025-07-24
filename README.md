@@ -70,7 +70,7 @@ Before running this project, make sure you have the following installed:
 
 ```bash
 git clone https://github.com/Zienab-Khaled/full_stack_project.git
-cd laravel-vue-test
+cd full_stack_project
 ```
 
 ### 2. Install PHP Dependencies
