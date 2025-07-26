@@ -226,11 +226,11 @@ npm run dev
 
 ### Postman Collection
 
-A complete Postman collection is included: `Laravel_Vue_Test_API.postman_collection.json`
+A complete Postman collection is included: [`Laravel_Vue_Test_API.postman_collection.json`](Laravel_Vue_Test_API.postman_collection.json)
 
 **Setup Instructions:**
 
-1. Import the collection into Postman
-2. Set the `base_url` variable to your local server (e.g., `http://localhost:8000`)
-3. Use the provided sample users for authentication
-
+1. Download the collection by clicking the link above
+2. Import the collection into Postman
+3. Set the `base_url` variable to your local server (e.g., `http://localhost:8000`)
+4. Use the provided sample users for authentication
