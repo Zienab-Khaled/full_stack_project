@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -40,13 +41,8 @@ class PostController extends Controller
         $posts = $query->orderBy('created_at', 'desc')
             ->paginate($request->get('per_page', 5));
 
-        $postsWithUrls = $posts->items();
-        foreach ($postsWithUrls as $post) {
-            $post->image_url = $post->image ? asset('storage/' . $post->image) : null;
-        }
-
         return response()->json([
-            'posts' => $postsWithUrls,
+            'posts' => PostResource::collection($posts),
             'pagination' => [
                 'current_page' => $posts->currentPage(),
                 'last_page' => $posts->lastPage(),
@@ -105,7 +101,7 @@ class PostController extends Controller
         $post->save();
 
         return response()->json([
-            'post' => $post->load('author'),
+            'post' => new PostResource($post->load('author')),
             'message' => 'Post created successfully'
         ], 201);
     }
@@ -126,7 +122,7 @@ class PostController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        return response()->json(['post' => $post]);
+        return response()->json(['post' => new PostResource($post)]);
     }
 
 
@@ -171,7 +167,7 @@ class PostController extends Controller
         $post->update($data);
 
         return response()->json([
-            'post' => $post->load('author'),
+            'post' => new PostResource($post->load('author')),
             'message' => 'Post updated successfully'
         ]);
     }
