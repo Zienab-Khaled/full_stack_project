@@ -49,14 +49,4 @@ class UserAuthController extends Controller
             'message' => 'User logged out successfully'
         ]);
     }
-
-    /**
-     * Get authenticated user info
-     */
-    public function user(Request $request)
-    {
-        return response()->json([
-            'user' => $request->user()
-        ]);
-    }
 }

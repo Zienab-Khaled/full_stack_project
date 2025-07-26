@@ -11,7 +11,7 @@ class PostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // Authorization will be handled in the controller
+        return true;
     }
 
     /**
@@ -27,12 +27,9 @@ class PostRequest extends FormRequest
             'status' => 'required|in:published,draft',
         ];
 
-        // Add image validation rules
         if ($this->isMethod('POST')) {
-            // For creating new posts, image is optional
             $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
         } else {
-            // For updating posts, image is optional
             $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048';
         }
 

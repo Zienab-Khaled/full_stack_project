@@ -110,8 +110,8 @@
                             Quick Actions
                         </h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <router-link
-                                to="/posts"
+                            <a
+                                href="/posts"
                                 class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                                 <svg
@@ -137,10 +137,10 @@
                                         Manage and view all posts in the system
                                     </p>
                                 </div>
-                            </router-link>
+                            </a>
 
-                            <router-link
-                                to="/posts/create"
+                            <a
+                                href="/posts/create"
                                 class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                             >
                                 <svg
@@ -166,7 +166,7 @@
                                         Add a new post to the system
                                     </p>
                                 </div>
-                            </router-link>
+                            </a>
                         </div>
                     </div>
                 </div>

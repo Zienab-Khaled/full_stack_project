@@ -49,14 +49,4 @@ class AdminAuthController extends Controller
             'message' => 'Admin logged out successfully'
         ]);
     }
-
-    /**
-     * Get authenticated admin info
-     */
-    public function user(Request $request)
-    {
-        return response()->json([
-            'admin' => $request->user()
-        ]);
-    }
 }

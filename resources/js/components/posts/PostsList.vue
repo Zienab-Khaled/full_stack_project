@@ -3,19 +3,6 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <!-- Header -->
-                    <div class="flex justify-between items-center mb-6">
-                        <h1 class="text-2xl font-semibold text-gray-900">
-                            Posts
-                        </h1>
-                        <router-link
-                            to="/posts/create"
-                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                        >
-                            Create New Post
-                        </router-link>
-                    </div>
-
                     <!-- Search and Filters -->
                     <div class="mb-6 space-y-4">
                         <div class="flex flex-col sm:flex-row gap-4">
@@ -111,12 +98,12 @@
                                     </div>
                                 </div>
                                 <div class="flex space-x-2 ml-4">
-                                    <router-link
-                                        :to="`/posts/${post.id}/edit`"
+                                    <a
+                                        :href="`/posts/${post.id}/edit`"
                                         class="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
                                     >
                                         Edit
-                                    </router-link>
+                                    </a>
                                     <button
                                         @click="deletePost(post.id)"
                                         class="text-red-600 hover:text-red-900 text-sm font-medium"
