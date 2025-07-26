@@ -101,8 +101,8 @@
                   <button
                     v-if="form.image || imagePreview"
                     type="button"
-                    @click="removeImage"
-                    class="px-3 py-2 text-sm text-red-600 hover:text-red-800 font-medium"
+                    @click="removeNewImage"
+                    class="px-3 py-2 text-sm text-red-600 hover:text-red-800 font-medium border border-red-300 hover:bg-red-50 rounded"
                   >
                     Remove
                   </button>
@@ -125,7 +125,7 @@
                   />
                 </div>
                 <!-- Current Image (for edit mode) -->
-                <div v-else-if="post && post.image" class="mt-3">
+                <div v-else-if="post && post.image && !hideCurrentImage" class="mt-3">
                   <div class="flex items-center space-x-3">
                     <img
                       :src="post.image_url || `/storage/${post.image}`"
@@ -252,6 +252,9 @@ export default {
       remove_image: false,
     })
 
+    // Add a ref to track if current image should be hidden
+    const hideCurrentImage = ref(false)
+
     const isEditing = computed(() => {
       return route.params.id !== undefined
     })
@@ -274,6 +277,8 @@ export default {
           current_image: post.value.image_url || null,
           remove_image: false,
         }
+        // Reset hide current image flag
+        hideCurrentImage.value = false
       } catch (error) {
         console.log("Error fetching post:", error)
         generalError.value = "Error loading post. Please try again."
@@ -293,12 +298,25 @@ export default {
     }
 
     const removeImage = () => {
-      form.value.image = null
-      form.value.current_image = null
-      form.value.remove_image = true
-      imagePreview.value = null
-      if (imageInput.value) {
-        imageInput.value.value = ''
+      if (confirm('Are you sure you want to remove the current image?')) {
+        form.value.image = null
+        form.value.current_image = null
+        form.value.remove_image = true
+        imagePreview.value = null
+        hideCurrentImage.value = true // Hide the current image from DOM
+        if (imageInput.value) {
+          imageInput.value.value = ''
+        }
+      }
+    }
+
+    const removeNewImage = () => {
+      if (confirm('Are you sure you want to remove the selected image?')) {
+        form.value.image = null
+        imagePreview.value = null
+        if (imageInput.value) {
+          imageInput.value.value = ''
+        }
       }
     }
 
@@ -371,8 +389,10 @@ export default {
       submitForm,
       imageInput,
       imagePreview,
+      hideCurrentImage,
       handleImageChange,
       removeImage,
+      removeNewImage,
     }
   }
 }
