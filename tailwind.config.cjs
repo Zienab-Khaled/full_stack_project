@@ -1,12 +1,17 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
     content: [
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
     ],
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                primary: "#667eea",
+                secondary: "#764ba2",
+            },
+        },
     },
     plugins: [],
 };

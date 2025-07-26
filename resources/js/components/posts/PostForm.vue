@@ -18,7 +18,7 @@
                     </div>
 
                     <!-- Form -->
-                    <form @submit.prevent="submitForm" class="space-y-6">
+                    <form @submit.prevent="submitForm" class="space-y-6" enctype="multipart/form-data">
                         <!-- Title -->
                         <div>
                             <label
@@ -34,14 +34,14 @@
                                 required
                                 maxlength="255"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                :class="{ 'border-red-500': errors.title }"
+                                :class="{ 'border-red-500': errors.title && errors.title.length > 0 }"
                                 placeholder="Enter post title..."
                             />
                             <div
-                                v-if="errors.title"
+                                v-if="errors.title && errors.title.length > 0"
                                 class="mt-1 text-sm text-red-600"
                             >
-                                {{ errors.title }}
+                                {{ Array.isArray(errors.title) ? errors.title[0] : errors.title }}
                             </div>
                             <div class="mt-1 text-sm text-gray-500">
                                 {{ form.title.length }}/255 characters
@@ -62,14 +62,68 @@
                                 rows="8"
                                 required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                :class="{ 'border-red-500': errors.content }"
+                                :class="{ 'border-red-500': errors.content && errors.content.length > 0 }"
                                 placeholder="Write your post content here..."
                             ></textarea>
                             <div
-                                v-if="errors.content"
+                                v-if="errors.content && errors.content.length > 0"
                                 class="mt-1 text-sm text-red-600"
                             >
-                                {{ errors.content }}
+                                {{ Array.isArray(errors.content) ? errors.content[0] : errors.content }}
+                            </div>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div>
+                            <label
+                                for="image"
+                                class="block text-sm font-medium text-gray-700 mb-2"
+                            >
+                                Featured Image
+                            </label>
+                            <div class="flex items-center space-x-4">
+                                <input
+                                    id="image"
+                                    ref="imageInput"
+                                    type="file"
+                                    accept="image/*"
+                                    @change="handleImageChange"
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                />
+                                <button
+                                    v-if="form.image || imagePreview"
+                                    type="button"
+                                    @click="removeImage"
+                                    class="px-3 py-2 text-sm text-red-600 hover:text-red-800 font-medium"
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                            <div
+                                v-if="errors.image && errors.image.length > 0"
+                                class="mt-1 text-sm text-red-600"
+                            >
+                                {{ Array.isArray(errors.image) ? errors.image[0] : errors.image }}
+                            </div>
+                            <div class="mt-1 text-sm text-gray-500">
+                                Upload a featured image for your post (optional)
+                            </div>
+                            <!-- Image Preview -->
+                            <div v-if="imagePreview" class="mt-3">
+                                <img
+                                    :src="imagePreview"
+                                    alt="Preview"
+                                    class="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                                />
+                            </div>
+                            <!-- Current Image (for edit mode) -->
+                            <div v-else-if="form.current_image" class="mt-3">
+                                <img
+                                    :src="form.current_image"
+                                    alt="Current image"
+                                    class="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                                />
+                                <p class="mt-1 text-sm text-gray-500">Current image</p>
                             </div>
                         </div>
 
@@ -86,17 +140,17 @@
                                 v-model="form.status"
                                 required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                :class="{ 'border-red-500': errors.status }"
+                                :class="{ 'border-red-500': errors.status && errors.status.length > 0 }"
                             >
                                 <option value="">Select status</option>
                                 <option value="draft">Draft</option>
                                 <option value="published">Published</option>
                             </select>
                             <div
-                                v-if="errors.status"
+                                v-if="errors.status && errors.status.length > 0"
                                 class="mt-1 text-sm text-red-600"
                             >
-                                {{ errors.status }}
+                                {{ Array.isArray(errors.status) ? errors.status[0] : errors.status }}
                             </div>
                             <div class="mt-1 text-sm text-gray-500">
                                 <span
@@ -146,12 +200,12 @@
                         <div
                             class="flex justify-end space-x-4 pt-6 border-t border-gray-200"
                         >
-                            <router-link
-                                to="/posts"
+                            <a
+                                href="/posts"
                                 class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Cancel
-                            </router-link>
+                            </a>
                             <button
                                 type="submit"
                                 :disabled="loading"
@@ -201,43 +255,89 @@
 
 <script>
 import { ref, computed, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 
 export default {
     name: "PostForm",
     setup() {
-        const route = useRoute();
-        const router = useRouter();
         const loading = ref(false);
         const generalError = ref("");
         const errors = ref({});
+        const imageInput = ref(null);
+        const imagePreview = ref(null);
 
         const form = ref({
             title: "",
             content: "",
             status: "",
+            image: null,
+            current_image: null,
         });
 
         const isEditing = computed(() => {
-            return route.params.id !== undefined;
+            // Check if we're in edit mode by looking for post ID in the URL
+            const urlParts = window.location.pathname.split('/');
+            return urlParts.includes('edit');
         });
+
+        const getPostId = () => {
+            const urlParts = window.location.pathname.split('/');
+            const editIndex = urlParts.indexOf('edit');
+            if (editIndex > 0) {
+                return urlParts[editIndex - 1];
+            }
+            return null;
+        };
 
         const fetchPost = async () => {
             if (!isEditing.value) return;
 
+            const postId = getPostId();
+            if (!postId) return;
+
+            console.log('Fetching post with ID:', postId); // Debug log
+
             try {
-                const response = await axios.get(`/posts/${route.params.id}`);
+                const response = await axios.get(`/posts/${postId}`);
                 const post = response.data.post;
+
+                console.log('Fetched post:', post); // Debug log
+
+                // Clear any existing errors when loading data
+                errors.value = {};
+                generalError.value = "";
 
                 form.value = {
                     title: post.title,
                     content: post.content,
                     status: post.status,
+                    image: null,
+                    current_image: post.image_url || null,
                 };
             } catch (error) {
                 console.error("Error fetching post:", error);
                 generalError.value = "Error loading post. Please try again.";
+            }
+        };
+
+        const handleImageChange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                form.value.image = file;
+                // Create preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        const removeImage = () => {
+            form.value.image = null;
+            imagePreview.value = null;
+            if (imageInput.value) {
+                imageInput.value.value = '';
             }
         };
 
@@ -247,13 +347,31 @@ export default {
             errors.value = {};
 
             try {
-                if (isEditing.value) {
-                    await axios.put(`/posts/${route.params.id}`, form.value);
-                } else {
-                    await axios.post("/posts", form.value);
+                const formData = new FormData();
+                formData.append('title', form.value.title);
+                formData.append('content', form.value.content);
+                formData.append('status', form.value.status);
+
+                if (form.value.image) {
+                    formData.append('image', form.value.image);
                 }
 
-                router.push("/posts");
+                if (isEditing.value) {
+                    const postId = getPostId();
+                    await axios.put(`/posts/${postId}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                } else {
+                    await axios.post("/posts", formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                }
+
+                window.location.href = "/posts";
             } catch (error) {
                 if (error.response?.data?.errors) {
                     errors.value = error.response.data.errors;
@@ -277,6 +395,10 @@ export default {
             errors,
             generalError,
             isEditing,
+            imageInput,
+            imagePreview,
+            handleImageChange,
+            removeImage,
             submitForm,
         };
     },

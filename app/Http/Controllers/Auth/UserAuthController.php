@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,7 @@ class UserAuthController extends Controller
         $token = $user->createToken('user-token')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token,
             'message' => 'User logged in successfully'
         ]);
@@ -47,16 +48,6 @@ class UserAuthController extends Controller
 
         return response()->json([
             'message' => 'User logged out successfully'
-        ]);
-    }
-
-    /**
-     * Get authenticated user info
-     */
-    public function user(Request $request)
-    {
-        return response()->json([
-            'user' => $request->user()
         ]);
     }
 }

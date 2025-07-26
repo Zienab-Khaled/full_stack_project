@@ -1,8 +1,8 @@
 {
     "info": {
         "_postman_id": "laravel-vue-test-api",
-        "name": "Laravel Vue Test API",
-        "description": "API collection for Laravel Vue Full Stack Test Project",
+        "name": "Laravel Vue Blog API",
+        "description": "API collection for Laravel Vue Full Stack Blog Project",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
@@ -108,52 +108,6 @@
                             "path": ["api", "users", "logout"]
                         }
                     }
-                },
-                {
-                    "name": "Get Admin User Info",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{admin_token}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/admins/user",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "admins", "user"]
-                        }
-                    }
-                },
-                {
-                    "name": "Get User Info",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Authorization",
-                                "value": "Bearer {{user_token}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/users/user",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "users", "user"]
-                        }
-                    }
                 }
             ]
         },
@@ -203,6 +157,29 @@
                             "raw": "{{base_url}}/api/posts",
                             "host": ["{{base_url}}"],
                             "path": ["api", "posts"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Posts Statistics",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/posts/stats",
+                            "host": ["{{base_url}}"],
+                            "path": ["api", "posts", "stats"]
                         }
                     }
                 },
@@ -308,19 +285,35 @@
                                 "type": "text"
                             },
                             {
-                                "key": "Content-Type",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
                                 "key": "Accept",
                                 "value": "application/json",
                                 "type": "text"
                             }
                         ],
                         "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"title\": \"Test Post\",\n    \"content\": \"This is a test post content.\",\n    \"status\": \"draft\"\n}"
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "title",
+                                    "value": "Test Post",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "content",
+                                    "value": "This is a test post content.",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "draft",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/posts",
@@ -355,16 +348,11 @@
                 {
                     "name": "Update Post",
                     "request": {
-                        "method": "PUT",
+                        "method": "POST",
                         "header": [
                             {
                                 "key": "Authorization",
                                 "value": "Bearer {{user_token}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json",
                                 "type": "text"
                             },
                             {
@@ -374,8 +362,40 @@
                             }
                         ],
                         "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"title\": \"Updated Test Post\",\n    \"content\": \"This is an updated test post content.\",\n    \"status\": \"published\"\n}"
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "_method",
+                                    "value": "PUT",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "title",
+                                    "value": "Updated Test Post",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "content",
+                                    "value": "This is an updated test post content.",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "status",
+                                    "value": "published",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "image",
+                                    "type": "file",
+                                    "src": []
+                                },
+                                {
+                                    "key": "remove_image",
+                                    "value": "1",
+                                    "type": "text",
+                                    "description": "Set to 1 to remove existing image"
+                                }
+                            ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/posts/1",

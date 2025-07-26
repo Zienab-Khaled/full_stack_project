@@ -26,19 +26,16 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin routes
     Route::prefix('admins')->group(function () {
         Route::post('/logout', [AdminAuthController::class, 'logout']);
-        Route::get('/user', [AdminAuthController::class, 'user']);
     });
 
     // User routes
     Route::prefix('users')->group(function () {
         Route::post('/logout', [UserAuthController::class, 'logout']);
-        Route::get('/user', [UserAuthController::class, 'user']);
     });
-
-    // Posts routes (accessible by both users and admins)
-    Route::apiResource('posts', PostController::class);
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Posts routes (accessible by both users and admins)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('posts/stats', [PostController::class, 'stats']);
+    Route::apiResource('posts', PostController::class);
 });

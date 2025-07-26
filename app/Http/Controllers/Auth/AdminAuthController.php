@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AdminResource;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,7 @@ class AdminAuthController extends Controller
         $token = $admin->createToken('admin-token')->plainTextToken;
 
         return response()->json([
-            'admin' => $admin,
+            'admin' => new AdminResource($admin),
             'token' => $token,
             'message' => 'Admin logged in successfully'
         ]);
@@ -47,16 +48,6 @@ class AdminAuthController extends Controller
 
         return response()->json([
             'message' => 'Admin logged out successfully'
-        ]);
-    }
-
-    /**
-     * Get authenticated admin info
-     */
-    public function user(Request $request)
-    {
-        return response()->json([
-            'admin' => $request->user()
         ]);
     }
 }

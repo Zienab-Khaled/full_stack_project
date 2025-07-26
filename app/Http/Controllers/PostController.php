@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -38,10 +39,10 @@ class PostController extends Controller
 
         // Pagination
         $posts = $query->orderBy('created_at', 'desc')
-            ->paginate($request->get('per_page', 10));
+            ->paginate($request->get('per_page', 5));
 
         return response()->json([
-            'posts' => $posts->items(),
+            'posts' => PostResource::collection($posts),
             'pagination' => [
                 'current_page' => $posts->currentPage(),
                 'last_page' => $posts->lastPage(),
@@ -52,11 +53,29 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Get post statistics for dashboard.
      */
-    public function create()
+    public function stats(Request $request): JsonResponse
     {
-        //
+        $baseConditions = [];
+        if ($request->user() instanceof \App\Models\User) {
+            $baseConditions = [
+                'author_type' => \App\Models\User::class,
+                'author_id' => $request->user()->id
+            ];
+        }
+
+        $totalPosts = Post::where($baseConditions)->count();
+        $publishedPosts = Post::where($baseConditions)->where('status', 'published')->count();
+        $draftPosts = Post::where($baseConditions)->where('status', 'draft')->count();
+
+        return response()->json([
+            'stats' => [
+                'total' => $totalPosts,
+                'published' => $publishedPosts,
+                'draft' => $draftPosts,
+            ]
+        ]);
     }
 
     /**
@@ -64,6 +83,11 @@ class PostController extends Controller
      */
     public function store(PostRequest $request): JsonResponse
     {
+        // Check if user is authenticated
+        if (!$request->user()) {
+            return response()->json(['message' => 'Unauthorized. Please login first.'], 401);
+        }
+
         $data = $request->validated();
 
         // Handle image upload
@@ -77,7 +101,7 @@ class PostController extends Controller
         $post->save();
 
         return response()->json([
-            'post' => $post->load('author'),
+            'post' => new PostResource($post->load('author')),
             'message' => 'Post created successfully'
         ], 201);
     }
@@ -89,7 +113,7 @@ class PostController extends Controller
     {
         $post = Post::with('author')->findOrFail($id);
 
-        // Check if user can view this post
+
         if (
             $request->user() instanceof \App\Models\User &&
             $post->author_type === \App\Models\User::class &&
@@ -98,16 +122,10 @@ class PostController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        return response()->json(['post' => $post]);
+        return response()->json(['post' => new PostResource($post)]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -127,8 +145,16 @@ class PostController extends Controller
 
         $data = $request->validated();
 
+        // Handle image removal
+        if ($request->has('remove_image') && $request->remove_image) {
+            // Delete old image if exists
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+            $data['image'] = null;
+        }
         // Handle image upload
-        if ($request->hasFile('image')) {
+        elseif ($request->hasFile('image')) {
             // Delete old image if exists
             if ($post->image) {
                 Storage::disk('public')->delete($post->image);
@@ -141,7 +167,7 @@ class PostController extends Controller
         $post->update($data);
 
         return response()->json([
-            'post' => $post->load('author'),
+            'post' => new PostResource($post->load('author')),
             'message' => 'Post updated successfully'
         ]);
     }

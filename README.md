@@ -1,6 +1,6 @@
 # Laravel Vue Full Stack Test Project
 
-A comprehensive full stack application built with Laravel 12 and Vue 3, featuring multi-authentication, posts management, and modern UI design.
+A full stack application built with Laravel 12 and Vue 3, featuring multi-authentication, posts management, image upload functionality, and modern UI design. This project demonstrates a complete Single Page Application (SPA) architecture with robust API testing coverage.
 
 ## 🚀 Features
 
@@ -19,50 +19,27 @@ A comprehensive full stack application built with Laravel 12 and Vue 3, featurin
     -   Users can only manage their own posts
 -   **Post Status**: Draft and Published states
 -   **Search & Filtering**: Search posts by title/content and filter by status
--   **Pagination**: Efficient handling of large datasets
+-   **Pagination**: Server-side pagination for efficient handling of large datasets
+-   **Image Upload**: Support for featured images with preview and removal functionality
+-   **Image Validation**: File type and size validation for uploaded images
 
 ### Frontend Features
 
 -   **Vue 3 Composition API**: Modern reactive framework
 -   **Vue Router**: Client-side routing with navigation guards
 -   **TailwindCSS**: Modern, utility-first CSS framework
--   **Responsive Design**: Mobile-first approach
 -   **Axios Integration**: HTTP client for API communication
 
 ### Backend Features
 
 -   **Laravel 12**: Latest Laravel framework
--   **API Resources**: RESTful API endpoints
+-   **API Resources**: RESTful API endpoints with proper data formatting
 -   **Form Validation**: Server-side validation with custom error messages
 -   **Database Seeding**: Sample data for testing
 -   **Polymorphic Relationships**: Flexible post authorship system
+-   **Comprehensive Testing**: 52+ test cases covering all functionality
+-   **Image Storage**: Secure file upload and storage management
 
-## 🛠️ Tech Stack
-
-### Backend
-
--   **Laravel 12** - PHP framework
--   **Laravel Sanctum** - API authentication
--   **MySQL** - Database
--   **Eloquent ORM** - Database abstraction
-
-### Frontend
-
--   **Vue 3** - Progressive JavaScript framework
--   **Vue Router 4** - Official router for Vue.js
--   **Vite** - Build tool and dev server
--   **TailwindCSS** - Utility-first CSS framework
--   **Axios** - HTTP client
-
-## 📋 Prerequisites
-
-Before running this project, make sure you have the following installed:
-
--   **PHP 8.2+**
--   **Composer**
--   **Node.js 18+**
--   **npm** or **yarn**
--   **MySQL** or **MariaDB**
 
 ## 🚀 Installation
 
@@ -143,65 +120,11 @@ The application comes with pre-seeded users for testing:
 ### Admin Users
 
 -   **Email**: admin@example.com | **Password**: password
--   **Email**: john.admin@example.com | **Password**: password
--   **Email**: jane.admin@example.com | **Password**: password
 
-### Regular Users
+### Regular Users Example
 
 -   **Email**: john@example.com | **Password**: password
--   **Email**: jane@example.com | **Password**: password
--   **Email**: bob@example.com | **Password**: password
--   **Email**: alice@example.com | **Password**: password
 
-## 🗂️ Project Structure
-
-```
-laravel-vue-test/
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── Auth/
-│   │   │   │   ├── AdminAuthController.php
-│   │   │   │   └── UserAuthController.php
-│   │   │   └── PostController.php
-│   │   └── Requests/
-│   │       └── PostRequest.php
-│   └── Models/
-│       ├── Admin.php
-│       ├── Post.php
-│       └── User.php
-├── database/
-│   ├── migrations/
-│   │   ├── create_admins_table.php
-│   │   └── create_posts_table.php
-│   └── seeders/
-│       ├── AdminSeeder.php
-│       ├── UserSeeder.php
-│       └── PostSeeder.php
-├── resources/
-│   ├── js/
-│   │   ├── components/
-│   │   │   ├── App.vue
-│   │   │   ├── auth/
-│   │   │   │   ├── AdminLogin.vue
-│   │   │   │   └── UserLogin.vue
-│   │   │   ├── admin/
-│   │   │   │   └── AdminDashboard.vue
-│   │   │   ├── user/
-│   │   │   │   └── UserDashboard.vue
-│   │   │   └── posts/
-│   │   │       ├── PostsList.vue
-│   │   │       └── PostForm.vue
-│   │   └── app.js
-│   ├── css/
-│   │   └── app.css
-│   └── views/
-│       └── welcome.blade.php
-├── routes/
-│   └── api.php
-└── config/
-    └── auth.php
-```
 
 ## 🔐 API Endpoints
 
@@ -211,8 +134,6 @@ laravel-vue-test/
 -   `POST /api/users/login` - User login
 -   `POST /api/admins/logout` - Admin logout (authenticated)
 -   `POST /api/users/logout` - User logout (authenticated)
--   `GET /api/admins/user` - Get admin user info (authenticated)
--   `GET /api/users/user` - Get user info (authenticated)
 
 ### Posts
 
@@ -221,10 +142,11 @@ laravel-vue-test/
 -   `GET /api/posts/{id}` - Get specific post (authenticated)
 -   `PUT /api/posts/{id}` - Update post (authenticated)
 -   `DELETE /api/posts/{id}` - Delete post (authenticated)
+-   `GET /api/posts/stats` - Get posts statistics (authenticated)
 
 ## 🎨 Frontend Routes
 
--   `/` - Redirects to user login
+-   `/` - Welcome page with login options
 -   `/admins/login` - Admin login page
 -   `/users/login` - User login page
 -   `/admins` - Admin dashboard (authenticated)
@@ -233,13 +155,56 @@ laravel-vue-test/
 -   `/posts/create` - Create new post (authenticated)
 -   `/posts/{id}/edit` - Edit post (authenticated)
 
-## 🔧 Development
+## 🚀 Advanced Features
 
-### Running Tests
+### Image Management
+
+-   **Upload Support**: File picker for images
+-   **Preview**: Real-time image preview before upload
+-   **Validation**: File type (jpg, jpeg, png, gif) and size (max 2MB) validation
+-   **Removal**: Remove existing images with confirmation
+-   **Storage**: Secure file storage with automatic cleanup
+
+### Dashboard Statistics
+
+-   **Real-time Stats**: Total, published, and draft post counts
+-   **Role-based Views**: Different stats for admins vs users
+-   **Auto-refresh**: Statistics update automatically
+
+### Search & Filtering
+
+-   **Full-text Search**: Search by title and content
+-   **Status Filtering**: Filter by published/draft status
+-   **Combined Queries**: Search and filter simultaneously
+
+### Pagination
+
+-   **Server-side Pagination**: Efficient handling of large datasets
+-   **Configurable Page Size**: Adjustable posts per page
+-   **Navigation**: First, previous, next, last page controls
+
+## 🧪 Testing
+
+### Running All Tests
 
 ```bash
 php artisan test
 ```
+
+### Running Specific Test Suites
+
+```bash
+# Run only feature tests
+php artisan test tests/Feature/
+
+# Run only unit tests
+php artisan test tests/Unit/
+
+# Run specific test file
+php artisan test tests/Feature/PostControllerTest.php
+```
+
+## 🔧 Development
 
 ### Building for Production
 
@@ -247,4 +212,25 @@ php artisan test
 npm run build
 ```
 
+### Development Server
+
+```bash
+# Start Laravel server
+php artisan serve
+
+# Start Vite dev server (in separate terminal)
+npm run dev
+```
+
+## 📦 API Documentation
+
+### Postman Collection
+
+A complete Postman collection is included: `Laravel_Vue_Test_API.postman_collection.json`
+
+**Setup Instructions:**
+
+1. Import the collection into Postman
+2. Set the `base_url` variable to your local server (e.g., `http://localhost:8000`)
+3. Use the provided sample users for authentication
 
